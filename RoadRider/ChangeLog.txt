@@ -1,0 +1,169 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3GB3 - A5
+RoadRider
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Alex Pattison
+McMaster University
+2018-04-09
+#Assets Used
+8 Bit Composers Super Pack LE (Free) 1.0
+Carvi Media Entertainment
+
+Free Barrel Model Pack 1.1
+Black Horizon Studios
+
+CRC12 – Free Demo 1.5.2
+Alex Barbulescu
+
+Hungry Zombie 1.0
+Andryuha1981
+
+Skybox Volume 2 (Nebula) 1.0
+Hedgehog Team
+
+Standard Assets 1.1.4
+Unity Technologies
+
+TrackGen – A Procedural Track Generator 1.01
+Marcus Vinicius da Silva
+
+Unity Particle Pack 1.3
+Unity Technologies
+
+Unity Samples: UI 1.2.1
+Unity Technologies
+
+Hand Painted Bottle 1.1
+Antonio Neves
+
+Road Blocker 4.0
+Rakshi Games
+
+
+#Change Log
+Script files I wrote code in:
+	-Events.cs - for game events
+		-attached to the Vehicle Controller prefab, which contains the player controlled car
+		-entirely my script
+	-RealTimeTrack.cs 
+		(TrackGen – A Procedural Track Generator by Marcus Vinicius da Silva)
+		-generates the entire environment besides a few game objects at start (4 torches, 2 			 zombies, 1 box collider, 1 vehicle)
+		-the generation of the track in this script is not my work
+		-the generation of the public GameObjects in this script is my work
+	-CarController.cs 
+		(Standard Assets by Unity)
+		-this script is not my work
+		-only added code to save current speed into PlayerPrefs
+		
+
+Issues Before:
+	-car does not get destroyed upon death and exists for a 3 second duration before returning to 		 the start screen
+	-endless falling if you back up off the track at the start
+	-coins give inconsistent number of points
+	-[critical bug] obstacle generation y location is incorrect, maybe due to track slope
+	-[critical bug] obstacle generation x location does not work correctly at some ranges 
+	 of track, somehow due to the track generation implementation
+	-no coin collection (only one point system for score existed)
+
+Game Design Goals:
+	-powerups (partially implemented)
+	-two score systems (to be usable in a store):
+		zombie count system
+		coin count system 
+	-store (partially implemented)
+		-related components are existant - UI button location, currency (coins and zombies)
+	-obstacle for instant death
+	-collect currency personally for player
+
+Fixed Issues:
+	-car now gets destroyed upon death
+	-falling off the track by backing up at the start will now result in death
+	-coins give a consistent number of points
+		-first tried OnTriggerExit, but coins did not immediately disappear
+		-resolved using a boolean in Update() to identify when a coin is triggering, which is to
+		 stop incrementing the score after the one necessary increment occurs
+
+New:
+	-two assets - Hand Painted Bottle, and Road Blocker
+	-spawning locations of coins
+		-coin x positions are next to each other (not totally random)
+		-randomly disrupts a fluid line of coins to start a new line of coins
+		 at a new random x position
+	-[removed] added dust particles generation
+		-turned off the generation
+		-the algorithm spawned a new GameObject at random places along the track
+		-this gave bad performance, should implement by making them spawn relative to the car
+	-added sandswirls generation beside the track
+		-rotation is set to be the same as the adjacent track piece rotation
+		-sand doesn't travel in its GameObject set rotation, and instead moves in the same global 		direction
+	-made each spawn frequency GameObject public, so their value can be changed in Unity
+	-added flash upon track piece spawn
+		-can't be seen at distance
+	-counts number of hit zombies
+		-this is intended for achievements or currency
+	-added speed value, displaying with score and zombie count for now
+	-added new barrier obstacle, deals 10dmg when hit at a speed < 35KPH, death otherwise
+	-added count for coins
+	-added powerups (no active use yet)
+
+Polished:
+	-lowered frequency of barrels
+	-better spawning location of torches
+		-spawns at an edge of the track
+	-increased field of view
+	-moved UI from top to below the car
+
+Existing Issues/Improvements:
+	-[critical bug] obstacle generation y location is incorrect, maybe due to track slope
+	-[critical bug] obstacle generation x location does not work correctly at some ranges 
+	 of track, maybe due to the track generation asset
+	-an efficient algorithm needs to be developed for spawning particle systems; to avoid 	 		 performance issues
+	-if by chance you are launched into the air by a collision:
+		-the camera view is horrendous
+		-you may fall too far from the track to hit intended colliders, and fall infinitely
+	-possible to get stuck on the edge of the track
+	-add: track has a lifetime, and falling off for being too slow should result in 		         	 	death
+		-forces player to achieve store items (better powerups/vehicles) to survive on track 			longer
+	-[important] improve UI (ex. Speedometer)
